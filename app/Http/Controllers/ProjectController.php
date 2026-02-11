@@ -26,11 +26,13 @@ class ProjectController extends Controller
     }
 
     public function show($id)
-    {
-        $project = Project::with('teamMembers')->findOrFail($id);
-        
-        return view('projects.show', compact('project'));
-    }
+        {
+            $project = Project::with(['teamMembers' => function ($q) {
+                $q->orderBy('name'); // optional
+            }])->findOrFail($id);
+
+            return view('projects.show', compact('project'));
+        }
 
     public function create()
     {
@@ -61,6 +63,7 @@ class ProjectController extends Controller
             'client' => 'required|string',
             'image' => 'nullable|image|max:2048',
             'team_members' => 'array',
+            'team_members.*' => 'integer|exists:team_members,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -71,11 +74,14 @@ class ProjectController extends Controller
         $validated['status'] = 'pending';
         $validated['progress'] = 0;
 
+        // get team member ids, then remove it from $validated
+        $teamMemberIds = $validated['team_members'] ?? [];
+        unset($validated['team_members']);
+
         $project = Project::create($validated);
 
-        if ($request->has('team_members')) {
-            $project->teamMembers()->attach($request->team_members);
-        }
+        // save pivot assignments
+        $project->teamMembers()->sync($teamMemberIds);
 
         return redirect()->route('projects.index')->with('success', 'Project created successfully');
     }

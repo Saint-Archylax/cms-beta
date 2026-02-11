@@ -171,8 +171,11 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($teamMembers as $member) {
-            TeamMember::create($member);
-        }
+        TeamMember::updateOrCreate(
+            ['email' => $member['email']], // unique key
+            $member
+        );
+}
 
         // Create Projects
         $projects = [
@@ -272,5 +275,7 @@ class DatabaseSeeder extends Seeder
         foreach ($expenseRequests as $request) {
             ExpenseRequest::create($request);
         }
+        $this->call(AttendanceDemoSeeder::class);
+        $this->call(UpdateRequestDemoSeeder::class);
     }
 }

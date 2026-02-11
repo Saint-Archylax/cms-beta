@@ -1,213 +1,489 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Header -->
-<div class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200">
-    <div class="px-6 py-4">
-        <h1 class="text-xl font-semibold text-gray-900">Create Project</h1>
-    </div>
-</div>
-
-<!-- Content -->
 <div class="p-6">
-    <div class="max-w-5xl mx-auto">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-            <form action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data" id="createProjectForm">
-                @csrf
-                
-                <!-- Project Details Section -->
-                <div class="space-y-5">
-                    <!-- Project Name -->
-                    <div class="grid grid-cols-2 gap-5">
-                        <div class="col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Project Name</label>
-                            <input type="text" name="name" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm" placeholder="Enter project name">
-                        </div>
+    <div class="max-w-6xl mx-auto">
 
-                        <!-- Project Type -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Project Type</label>
-                            <select name="type" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm">
-                                <option value="">Select a project type</option>
-                                @foreach($projectTypes as $type)
-                                <option value="{{ $type }}">{{ $type }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+        <!--modal-like card-->
+        <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-gray-800 bg-[#3f3f3f]">
 
-                        <!-- Project Code -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Project Code</label>
-                            <input type="text" name="code" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm" placeholder="e.g., GF-PRK-2025">
-                        </div>
+  
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-yellow-500/20 rounded-full"></div>
+            <div class="absolute top-6 right-10 w-20 h-20 bg-yellow-500/25 rounded-full"></div>
 
-                        <!-- Location -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Location</label>
-                            <input type="text" name="location" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm" placeholder="Enter location">
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-5">
 
-                        <!-- Client -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Client / Owner</label>
-                            <input type="text" name="client" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm" placeholder="Enter client name">
-                        </div>
+                <!--LEFT PANEL-->
+                <div class="md:col-span-2 bg-black p-5 text-white relative">
+                    <h1 class="text-2xl font-bold tracking-wide">Create Project</h1>
 
-                        <!-- Start Date -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Start Date</label>
-                            <input type="date" name="start_date" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm">
-                        </div>
+                    <!--Uploadbox-->
+                    <div class="mt-8 border border-dashed border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center text-center gap-3">
+                        <input type="file" id="imageUpload" name="image" accept="image/*" class="hidden" form="createProjectForm">
 
-                        <!-- End Date -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Expected End Date</label>
-                            <input type="date" name="end_date" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm">
-                        </div>
-
-                        <!-- Description -->
-                        <div class="col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <textarea name="description" rows="4" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition text-sm resize-none" placeholder="Enter project description"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Upload Image Section -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Upload Image of the Project Here</label>
-                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-yellow-400 hover:bg-yellow-50/30 transition cursor-pointer" onclick="document.getElementById('imageUpload').click()">
-                            <input type="file" id="imageUpload" name="image" accept="image/*" class="hidden">
-                            <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            <p class="text-sm text-gray-600">Drag & drop files or <span class="text-yellow-600 font-semibold">Browse</span></p>
-                            <p class="text-xs text-gray-500 mt-1">Supported formats: JPG, PNG, GIF</p>
-                        </div>
-                    </div>
-
-                    <!-- Assign Team Section -->
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="block text-sm font-semibold text-gray-700">Assign Team</label>
-                            <button type="button" onclick="addRole()" class="px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm font-medium flex items-center gap-1.5">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        <button type="button"
+                            onclick="document.getElementById('imageUpload').click()"
+                            class="w-full flex flex-col items-center justify-center gap-3">
+                            <div class="w-14 h-14 rounded-full border border-yellow-400 flex items-center justify-center">
+                                <svg class="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12V4m0 8l-3-3m3 3l3-3" />
                                 </svg>
-                                Add Role
-                            </button>
-                        </div>
-                        
-                        <!-- Roles Display -->
-                        <div id="rolesContainer" class="flex flex-wrap gap-2 mb-4">
-                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium flex items-center gap-2">
-                                Project Manager
-                                <button type="button" class="hover:bg-gray-200 rounded-full p-0.5 transition">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </span>
-                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium flex items-center gap-2">
-                                Site Engineer
-                                <button type="button" class="hover:bg-gray-200 rounded-full p-0.5 transition">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </span>
-                        </div>
+                            </div>
 
-                        <!-- Team Members Selection -->
-                        <div class="border border-gray-300 rounded-lg overflow-hidden">
-                            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-                                <span class="text-sm font-semibold text-gray-700">Select Team Members</span>
-                                <div class="relative">
-                                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                    <input type="text" placeholder="Search" class="pl-9 pr-3 py-1.5 w-48 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500">
-                                </div>
+                            <div class="text-sm text-gray-300">
+                                Drag & drop files or <span class="text-yellow-400 font-semibold underline">Browse</span>
                             </div>
-                            
-                            <div class="max-h-80 overflow-y-auto">
-                                <table class="w-full">
-                                    <thead class="bg-gray-50 sticky top-0">
-                                        <tr class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                                            <th class="text-left py-3 px-4 w-12"></th>
-                                            <th class="text-left py-3 px-4">Name</th>
-                                            <th class="text-left py-3 px-4">Location</th>
-                                            <th class="text-left py-3 px-4">Salary</th>
-                                            <th class="text-left py-3 px-4">Role</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200">
-                                        @foreach($teamMembers as $member)
-                                        <tr class="hover:bg-gray-50 transition">
-                                            <td class="py-3 px-4">
-                                                <input type="checkbox" name="team_members[]" value="{{ $member->id }}" class="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500">
-                                            </td>
-                                            <td class="py-3 px-4">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center font-semibold text-xs">
-                                                        {{ $member->initials }}
-                                                    </div>
-                                                    <span class="text-sm font-medium text-gray-900">{{ $member->name }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="py-3 px-4">
-                                                <span class="px-2.5 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700">{{ $member->location }}</span>
-                                            </td>
-                                            <td class="py-3 px-4 text-sm text-gray-900">{{ $member->salary }}</td>
-                                            <td class="py-3 px-4 text-sm text-gray-500">{{ $member->role }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            <div class="text-xs text-gray-500">Upload Image of the Project Here</div>
+                        </button>
+
+                        <!--preview-->
+                        <img id="imagePreview" class="hidden mt-3 w-full rounded-lg border border-gray-700 object-cover max-h-48" alt="Preview">
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
-                        <a href="{{ route('projects.index') }}" class="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium text-sm text-gray-700 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!--left Buttons-->
+                    <div class="mt-8 flex items-center justify-center gap-7">
+                        <a href="{{ route('projects.index') }}"
+                           class="inline-flex items-center gap-1 px-5 py-2 rounded-lg bg-orange-500 text-black font-semibold hover:bg-orange-400 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             Close
                         </a>
-                        <button type="submit" class="px-5 py-2.5 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-medium text-sm shadow-sm flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <button type="submit" form="createProjectForm"
+                            class="inline-flex items-center gap-1 px-5 py-2 rounded-lg bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Save
                         </button>
                     </div>
+
+                    <!--assigned Team (below buttons)-->
+                <div class="mt-10 bg-[#3f3f3f] border border-white/10 rounded-xl overflow-hidden">
+                    <!--header -->
+                    <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between gap-3">
+                        <div class="text-white font-semibold">Assigned Team</div>
+
+                        <div class="relative w-48">
+                            <input id="assignedSearch" type="text" placeholder="Search"
+                                class="w-full rounded-full bg-black/30 border border-white/10 text-white placeholder:text-white/40 pl-4 pr-9 py-1.5 text-xs outline-none focus:ring-0 focus:ring-yellow-400 focus:border-yellow-400">
+                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!--table-->
+                    <div class="max-h-72 overflow-y-auto">
+                        <table class="w-full text-left">
+                            <thead class="sticky top-0 bg-[#3f3f3f] border-b border-white/10">
+                                <tr class="text-[11px] uppercase tracking-wide text-white/60">
+                                    <th class="px-4 py-3">Name</th>
+                                    <th class="px-4 py-3 w-24">Rates</th>
+                                    <th class="px-4 py-3 w-24">Role</th>
+                                    <th class="px-4 py-3 w-10"></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="assignedWorkersBody" class="divide-y divide-white/10">
+                                <tr>
+                                    <td colspan="4" class="px-4 py-6 text-center text-white/50 text-sm">
+                                        No assigned workers yet.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--hidden inputs for team_members[]-->
+                    <div id="selectedWorkersInputs" class="hidden"></div>
                 </div>
-            </form>
+
+
+
+                </div>
+
+                <!--RIGHT PANEL (Form)-->
+                <div class="md:col-span-3 p-10 text-white">
+                    <h2 class="text-lg font-semibold mb-6">Project Information</h2>
+
+                    <form action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data" id="createProjectForm" class="space-y-6">
+                        @csrf
+
+                        <!-- Top row -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!--Project Name-->
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Project Name</label>
+                                <input type="text" name="name" required placeholder="Type here"
+                                    class="mt-2 w-full bg-transparent border-b border-white/20 focus:border-yellow-400 outline-none py-2 text-sm placeholder:text-white/30">
+                            </div>
+
+                            <!--Project Type-->
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Project Type</label>
+                                <select name="type" required
+                                    class="mt-2 w-full bg-white text-gray-900 rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-yellow-400">
+                                    <option value="">Select a project</option>
+                                    @foreach($projectTypes as $type)
+                                        <option value="{{ $type }}">{{ $type }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!--Location-->
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Location</label>
+                                <input type="text" name="location" required placeholder="Type here"
+                                    class="mt-2 w-full bg-transparent border-b border-white/20 focus:border-yellow-400 outline-none py-2 text-sm placeholder:text-white/30">
+                            </div>
+
+                            <!--Project Code-->
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Project Code</label>
+                                <input type="text" name="code" required placeholder="Type here"
+                                    class="mt-2 w-full bg-transparent border-b border-white/20 focus:border-yellow-400 outline-none py-2 text-sm placeholder:text-white/30">
+                            </div>
+
+                            <!--Start Date-->
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Start Date</label>
+                                <input type="date" name="start_date" required
+                                    class="mt-2 w-full bg-transparent border-b border-white/20 focus:border-yellow-400 outline-none py-2 text-sm text-white [color-scheme:dark]">
+                            </div>
+
+                            <!--End Date-->
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Expected End Date</label>
+                                <input type="date" name="end_date" required
+                                    class="mt-2 w-full bg-transparent border-b border-white/20 focus:border-yellow-400 outline-none py-2 text-sm text-white [color-scheme:dark]">
+                            </div>
+                        </div>
+
+                        <!--Client-->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Client / Owner</label>
+                                <input type="text" name="client" required placeholder="Type here"
+                                    class="mt-2 w-full bg-transparent border-b border-white/20 focus:border-yellow-400 outline-none py-2 text-sm placeholder:text-white/30">
+                            </div>
+                            <div class="flex items-end justify-center mt-0 border border-dashed border-gray-600 rounded-xl p-4 flex flex-col items-center justify-center text-center gap-3">
+                                <button type="button" onclick="openWorkersModal()"
+                                    class="inline-flex items-center gap-2 bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-300 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                    Add Role
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--Description-->
+                        <div>
+                            <label class="text-sm font-semibold text-white/90">Description</label>
+                            <textarea name="description" rows="3" required placeholder="Type here"
+                                class="mt-2 w-full bg-transparent border border-white/15 rounded-lg p-3 outline-none focus:border-yellow-400 text-sm placeholder:text-white/30"></textarea>
+                        </div>
+                        
+                
+                        <div id="selectedWorkersInputs" class="hidden"></div>
+                        
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Add Role / Select Workers Modal -->
+<div id="workersModal" class="fixed inset-0 z-[9999] hidden">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeWorkersModal()"></div>
+
+    <div class="relative w-full h-full flex items-center justify-center p-6">
+        <div class="w-full max-w-6xl rounded-2xl overflow-hidden shadow-2xl border border-gray-700 bg-[#3f3f3f]">
+
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 rounded bg-yellow-400"></div>
+                    <div class="text-sm font-semibold text-white/90">
+                        <span id="selectedCount">0</span> selected
+                    </div>
+                </div>
+
+                <div class="relative w-full max-w-md">
+                    <input id="workersSearch" type="text" placeholder="Search"
+                        class="w-full rounded-full bg-black/30 border border-white/10 text-white placeholder:text-white/40 pl-4 pr-10 py-2 text-sm outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400">
+                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white">
+                <div class="max-h-[60vh] overflow-y-auto">
+                    <table class="w-full">
+                        <thead class="sticky top-0 bg-white border-b border-gray-200">
+                            <tr class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                <th class="w-12 px-4 py-3 text-left"></th>
+                                <th class="px-4 py-3 text-left">Name</th>
+                                <th class="px-4 py-3 text-left">Location</th>
+                                <th class="px-4 py-3 text-left">Salary</th>
+                                <th class="px-4 py-3 text-left">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workersTableBody" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="5" class="px-4 py-8 text-center text-gray-500 text-sm">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-white/10 flex items-center justify-end gap-3">
+                <button type="button" onclick="closeWorkersModal()"
+                    class="px-6 py-2.5 rounded-lg bg-orange-500 text-black font-semibold hover:bg-orange-400 transition">
+                    Close
+                </button>
+
+                <button type="button" onclick="saveSelectedWorkers()"
+                    class="px-6 py-2.5 rounded-lg bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
+                    Save
+                </button>
+            </div>
+
         </div>
     </div>
 </div>
 
+
+
 <script>
-function addRole() {
-    const roles = ['Architect', 'Civil Engineer', 'Safety Officer', 'Foreman', 'Electrician', 'Plumber', 'Construction Worker'];
-    const container = document.getElementById('rolesContainer');
-    const currentRoles = Array.from(container.querySelectorAll('span')).map(span => span.textContent.trim().split('\n')[0].trim());
-    const availableRoles = roles.filter(role => !currentRoles.includes(role));
-    
-    if (availableRoles.length > 0) {
-        const roleSpan = document.createElement('span');
-        roleSpan.className = 'px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium flex items-center gap-2';
-        roleSpan.innerHTML = `
-            ${availableRoles[0]}
-            <button type="button" onclick="this.parentElement.remove()" class="hover:bg-gray-200 rounded-full p-0.5 transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        `;
-        container.appendChild(roleSpan);
+/** preview upload */
+document.getElementById('imageUpload')?.addEventListener('change', function(e) {
+    const file = e.target.files?.[0];
+    const preview = document.getElementById('imagePreview');
+    if (!file || !preview) return;
+
+    const url = URL.createObjectURL(file);
+    preview.src = url;
+    preview.classList.remove('hidden');
+});
+
+/** Workers modal logic */
+let selectedWorkers = new Map();  // id => worker object
+let workersCache = [];
+
+function openWorkersModal() {
+    document.getElementById('workersModal')?.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    fetchWorkers('');
+}
+
+function closeWorkersModal() {
+    document.getElementById('workersModal')?.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeWorkersModal();
+});
+
+document.getElementById('workersSearch')?.addEventListener('input', function () {
+    fetchWorkers(this.value.trim());
+});
+
+async function fetchWorkers(search) {
+    const tbody = document.getElementById('workersTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500 text-sm">Loading...</td></tr>`;
+
+    try {
+        const url = `{{ route('team.members.list') }}?search=${encodeURIComponent(search)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        workersCache = data;
+        renderWorkersTable(data);
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-red-600 text-sm">Failed to load workers.</td></tr>`;
     }
 }
+
+function renderWorkersTable(workers) {
+    const tbody = document.getElementById('workersTableBody');
+    if (!tbody) return;
+
+    if (!workers || workers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500 text-sm">No results.</td></tr>`;
+        updateSelectedCount();
+        return;
+    }
+
+    tbody.innerHTML = workers.map(w => {
+        const id = String(w.id);
+        const checked = selectedWorkers.has(id) ? 'checked' : '';
+        const initials = makeInitials(w.name);
+
+        const badge = (w.location === 'Onsite')
+            ? `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Onsite</span>`
+            : `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">Remote</span>`;
+
+        return `
+            <tr class="hover:bg-yellow-50/40 transition">
+                <td class="px-4 py-4">
+                    <input type="checkbox" class="w-4 h-4 accent-yellow-500"
+                        ${checked}
+                        onchange="toggleWorker('${id}')">
+                </td>
+
+                <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center text-xs font-extrabold">
+                            ${initials}
+                        </div>
+                        <div class="text-sm font-semibold text-gray-800">${escapeHtml(w.name ?? '')}</div>
+                    </div>
+                </td>
+
+                <td class="px-4 py-4">${badge}</td>
+
+                <td class="px-4 py-4 text-sm text-gray-700">${escapeHtml(w.salary ?? '')}</td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-gray-700">${escapeHtml(w.role ?? '')}</td>
+            </tr>
+        `;
+    }).join('');
+
+    updateSelectedCount();
+}
+
+function toggleWorker(id) {
+    id = String(id);
+    const worker = workersCache.find(w => String(w.id) === id);
+
+    if (selectedWorkers.has(id)) selectedWorkers.delete(id);
+    else if (worker) selectedWorkers.set(id, worker);
+
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const el = document.getElementById('selectedCount');
+    if (el) el.textContent = selectedWorkers.size;
+}
+
+function saveSelectedWorkers() {
+    const tbody = document.getElementById('assignedWorkersBody');
+    const inputs = document.getElementById('selectedWorkersInputs');
+    if (!tbody || !inputs) return;
+
+    // clear previous
+    tbody.innerHTML = '';
+    inputs.innerHTML = '';
+
+    if (selectedWorkers.size === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="px-4 py-6 text-center text-white/50 text-sm">
+                    No assigned workers yet.
+                </td>
+            </tr>
+        `;
+        closeWorkersModal();
+        return;
+    }
+
+    selectedWorkers.forEach((w, id) => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-white/5 transition';
+
+        // you can show salary as rate, or format it if you want
+        const rate = w.salary ?? '';
+
+        row.innerHTML = `
+            <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-black/30 border border-white/10 flex items-center justify-center text-xs font-bold text-yellow-300">
+                        ${makeInitials(w.name)}
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-white">${escapeHtml(w.name ?? '')}</div>
+                        <div class="text-xs text-white/50">${escapeHtml(w.role ?? '')}</div>
+                    </div>
+                </div>
+            </td>
+
+            <td class="px-4 py-3 text-sm text-white/80">${escapeHtml(rate)}</td>
+            <td class="px-4 py-3 text-sm text-white/80">${escapeHtml(w.location ?? '')}</td>
+
+            <td class="px-4 py-3 text-right">
+                <button type="button"
+                        class="p-2 rounded-lg hover:bg-white/10 transition"
+                        onclick="removeSelectedWorker('${id}')"
+                        title="Remove">
+                    <svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+
+        // hidden input for submit
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'team_members[]';
+        input.value = id;
+        inputs.appendChild(input);
+    });
+
+    closeWorkersModal();
+}
+
+
+function removeSelectedWorker(id) {
+    selectedWorkers.delete(String(id));
+    saveSelectedWorkers();  // rerender table + hidden inputs
+    updateSelectedCount();
+}
+
+
+function makeInitials(name) {
+    if (!name) return 'NA';
+    return name.split(' ').filter(Boolean).slice(0,2).map(x => x[0]).join('').toUpperCase();
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({
+        '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    }[s]));
+}
+
+document.getElementById('assignedSearch')?.addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#assignedWorkersBody tr');
+
+    rows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        r.style.display = text.includes(q) ? '' : 'none';
+    });
+});
+
+
 </script>
+
 @endsection

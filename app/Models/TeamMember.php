@@ -32,7 +32,9 @@ class TeamMember extends Model
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class);
+        return $this->belongsToMany(Project::class, 'project_team_member')
+            ->withTimestamps();
+            
     }
 
     public function documents()
@@ -59,5 +61,17 @@ class TeamMember extends Model
     {
         $words = explode(' ', $this->name);
         return strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
+    }
+
+    public function updateRequests()
+    {
+        return $this->hasMany(\App\Models\TeamMemberUpdateRequest::class);
+    }
+
+    public function pendingUpdateRequest()
+    {
+        return $this->hasOne(\App\Models\TeamMemberUpdateRequest::class)
+            ->where('status', 'pending')
+            ->latestOfMany();
     }
 }

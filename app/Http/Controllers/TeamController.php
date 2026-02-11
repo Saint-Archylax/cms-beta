@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\TeamMemberUpdateRequest;
 use App\Models\TeamMember;
 use App\Models\Project;
 use App\Models\AttendanceRecord;
@@ -20,10 +20,10 @@ class TeamController extends Controller
         return view('team.index', compact('teamMembers', 'projects', 'verificationHistory', 'attendanceRecords'));
     }
 
-    public function documents()
+    public function documents(Request $request)
     {
-        $teamMembers = TeamMember::with('documents')->get();
-        
+        $teamMembers = TeamMember::with(['documents', 'pendingUpdateRequest'])->orderBy('name')->get();
+
         return view('team.documents', compact('teamMembers'));
     }
 
@@ -87,14 +87,80 @@ class TeamController extends Controller
     }
 
     public function assignToProject(Request $request, $projectId)
+{
+    $validated = $request->validate([
+        'team_members' => 'required|array|min:1',
+        'team_members.*' => 'integer|exists:team_members,id',
+        // optional: lets us “replace” vs “add”
+        'mode' => 'nullable|in:replace,add',
+    ]);
+
+    $project = Project::findOrFail($projectId);
+
+    // Default: replace assigned members for that project
+    if (($validated['mode'] ?? 'replace') === 'add') {
+        $project->teamMembers()->syncWithoutDetaching($validated['team_members']);
+    } else {
+        $project->teamMembers()->sync($validated['team_members']);
+    }
+
+    return redirect()->back()->with('success', 'Team members assigned successfully');
+}
+
+
+    public function listMembers(Request $request)
     {
-        $validated = $request->validate([
-            'team_members' => 'required|array',
+        $search = $request->query('search');
+
+        $q = TeamMember::query()
+            ->select('id', 'name', 'location', 'salary', 'role', 'avatar');
+
+        if ($search) {
+            $q->where(function ($w) use ($search) {
+                $w->where('name', 'like', "%{$search}%")
+                ->orWhere('role', 'like', "%{$search}%")
+                ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        return response()->json(
+            $q->orderBy('name')->limit(200)->get()
+        );
+    }
+
+    public function approveUpdateRequest($id)
+    {
+        $req = TeamMemberUpdateRequest::with('teamMember')->findOrFail($id);
+
+        // apply changes to the team member
+        $req->teamMember->update($req->changes);
+
+        $req->update([
+            'status' => 'approved',
+            'reviewed_at' => now(),
+            'remarks' => null,
         ]);
 
-        $project = Project::findOrFail($projectId);
-        $project->teamMembers()->syncWithoutDetaching($validated['team_members']);
-        
-        return redirect()->back()->with('success', 'Team members assigned successfully');
+        return redirect()->back()->with('success', 'Update request approved');
     }
+
+    public function rejectUpdateRequest(Request $request, $id)
+    {
+        $data = $request->validate([
+            'remarks' => 'required|string',
+        ]);
+
+        $req = TeamMemberUpdateRequest::findOrFail($id);
+
+        $req->update([
+            'status' => 'rejected',
+            'reviewed_at' => now(),
+            'remarks' => $data['remarks'],
+        ]);
+
+        return redirect()->back()->with('success', 'Update request rejected');
+    }
+
+
+
 }

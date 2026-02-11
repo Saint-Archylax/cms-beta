@@ -1,179 +1,182 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Header -->
-<div class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200">
-    <div class="px-6 py-4 flex items-center justify-between">
-        <div>
-            <div class="flex items-center gap-2 mb-1">
-                <span class="px-2.5 py-0.5 bg-yellow-50 text-yellow-700 text-xs rounded-md font-medium border border-yellow-200">Project Details</span>
-            </div>
-            <h1 class="text-2xl font-bold text-gray-900">{{ $project->name }}</h1>
-        </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('projects.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium shadow-sm transition">
-                Back to Projects
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Content -->
 <div class="p-6">
-    <div class="flex gap-6">
-        <!-- Left Column -->
-        <div class="flex-1 space-y-6">
-            <!-- Description -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <p class="text-gray-600 leading-relaxed">{{ $project->description }}</p>
-            </div>
+    <div class="max-w-6xl mx-auto">
 
-            <!-- Project Details -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                            </svg>
-                        </div>
+        <!--card-->
+        <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-gray-800 bg-[#3f3f3f]">
+
+            <!--Decorative circles-->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-yellow-500/20 rounded-full"></div>
+            <div class="absolute top-6 right-10 w-20 h-20 bg-yellow-500/25 rounded-full"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-5">
+
+                <!--LEFT PANEL-->
+                <div class="md:col-span-2 bg-yellow-500/25 p-5 text-white relative ">
+                    <div class="flex items-start justify-between gap-3">
                         <div>
-                            <p class="text-xs text-gray-500 font-medium">Project Code</p>
-                            <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ $project->code }}</p>
+                            <div class="text-xs text-yellow-300/90 font-semibold tracking-wide">PROJECT DETAILS</div>
+                            <h1 class="text-2xl font-bold tracking-wide mt-1">{{ $project->name }}</h1>
                         </div>
-                    </div>
 
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        <a href="{{ route('projects.index') }}"
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 text-black font-semibold hover:bg-orange-400 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M15 19l-7-7 7-7"/>
                             </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Project Type</p>
-                            <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ $project->type }}</p>
-                        </div>
+                            Back
+                        </a>
                     </div>
 
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Client / Owner</p>
-                            <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ $project->client }}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Location</p>
-                            <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ $project->location }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Assigned Team -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h4 class="text-sm font-semibold text-gray-900 mb-4">Assigned Team</h4>
-                <div class="space-y-2 max-h-80 overflow-y-auto">
-                    @foreach($project->teamMembers as $member)
-                    <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center font-semibold text-sm">
-                                {{ $member->initials }}
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-gray-900">{{ $member->name }}</p>
-                                <p class="text-xs text-gray-500">{{ $member->role }}</p>
-                            </div>
-                        </div>
-                        <span class="px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700">{{ $member->location }}</span>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column -->
-        <div class="w-80 space-y-6">
-            <!-- Project Image -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                @if($project->image)
-                <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->name }}" class="w-full h-48 object-cover">
-                @else
-                <div class="w-full h-48 bg-gradient-to-br from-yellow-500 to-yellow-600"></div>
-                @endif
-            </div>
-
-            <!-- Timeframe -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h4 class="text-sm font-semibold text-gray-900 mb-4">Timeframe</h4>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Start Date</p>
-                            <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ $project->start_date->format('F d, Y') }}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 font-medium">Target Completion Date</p>
-                            <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ $project->end_date->format('F d, Y') }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Status -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h4 class="text-sm font-semibold text-gray-900 mb-4">Status</h4>
-                <div class="flex items-center gap-6">
-                    <!-- Circular Progress -->
-                    <div class="relative w-20 h-20">
-                        <svg class="w-20 h-20 transform -rotate-90">
-                            <circle cx="40" cy="40" r="36" fill="none" stroke="#e5e7eb" stroke-width="8" />
-                            <circle cx="40" cy="40" r="36" fill="none" stroke="#2563eb" stroke-width="8" 
-                                    stroke-dasharray="{{ $project->progress * 2.26 }} 226" 
-                                    stroke-linecap="round" />
-                        </svg>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="text-xl font-bold text-gray-900">{{ $project->progress }}%</span>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        @if($project->status === 'completed')
-                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold">Completed</span>
-                        @elseif($project->status === 'ongoing')
-                        <span class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">Ongoing</span>
+                    <!-- Image -->
+                    <div class="mt-6 rounded-xl overflow-hidden border border-white/10">
+                        @if($project->image)
+                            <img src="{{ asset('storage/' . $project->image) }}"
+                                 alt="{{ $project->name }}"
+                                 class="w-full h-52 object-cover">
                         @else
-                        <span class="px-4 py-2 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">Pending</span>
+                            <div class="w-full h-52 bg-gradient-to-br from-yellow-500 to-yellow-600"></div>
                         @endif
                     </div>
+
+                    <!-- Assigned Team -->
+                    <div class="bg-[#3f3f3f] rounded-2xl shadow-2xl border border-gray-800 overflow-hidden mt-6">
+                    <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+                        <h4 class="text-white font-semibold">Assigned Team</h4>
+                        <span class="text-xs text-white/60">{{ $project->teamMembers->count() }} member(s)</span>
+                    </div>
+
+                    <!-- ONLY TABLE SCROLLS -->
+                    <div class="max-h-80 overflow-y-auto">
+                        <table class="w-full text-left">
+                            <thead class="sticky top-0 bg-[#3f3f3f] border-b border-white/10">
+                                <tr class="text-[11px] uppercase tracking-wide text-white/60">
+                                    <th class="px-6 py-3">Name</th>
+                                    <th class="px-6 py-3 w-32">Role</th>
+                                    <th class="px-6 py-3 w-28">Location</th>
+                                    <th class="px-6 py-3 w-24">Rate</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-white/10">
+                                @forelse($project->teamMembers as $member)
+                                    <tr class="hover:bg-white/5 transition">
+                                        <td class="px-6 py-3">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-9 h-9 rounded-lg bg-black/30 border border-white/10 flex items-center justify-center text-xs font-bold text-yellow-300">
+                                                    {{ strtoupper(collect(explode(' ', $member->name))->filter()->take(2)->map(fn($w)=>substr($w,0,1))->join('')) }}
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-semibold text-white">{{ $member->name }}</div>
+                                                    <div class="text-xs text-white/50">{{ $member->role }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="px-6 py-3 text-sm text-white/80">{{ $member->role ?? '-' }}</td>
+                                        <td class="px-6 py-3 text-sm text-white/80">{{ $member->location ?? '-' }}</td>
+                                        <td class="px-6 py-3 text-sm text-white/80">{{ $member->salary ?? '-' }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-8 text-center text-white/50 text-sm">
+                                            No assigned members yet.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+                </div>
+
+                <!-- RIGHT PANEL -->
+                <div class="md:col-span-3 p-10 text-white">
+                    <h2 class="text-lg font-semibold mb-6">Project Information</h2>
+
+                    <div class="space-y-7">
+
+                        <!-- Two columns info -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Project Code</label>
+                                <div class="mt-2 w-full bg-transparent border-b border-white/20 py-2 text-sm text-white/90">
+                                    {{ $project->code }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Project Type</label>
+                                <div class="mt-2 w-full bg-transparent border-b border-white/20 py-2 text-sm text-white/90">
+                                    {{ $project->type }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Client / Owner</label>
+                                <div class="mt-2 w-full bg-transparent border-b border-white/20 py-2 text-sm text-white/90">
+                                    {{ $project->client }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Location</label>
+                                <div class="mt-2 w-full bg-transparent border-b border-white/20 py-2 text-sm text-white/90">
+                                    {{ $project->location }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Start Date</label>
+                                <div class="mt-2 w-full bg-transparent border-b border-white/20 py-2 text-sm text-white/90">
+                                    {{ optional($project->start_date)->format('F d, Y') ?? '-' }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-semibold text-white/90">Expected End Date</label>
+                                <div class="mt-2 w-full bg-transparent border-b border-white/20 py-2 text-sm text-white/90">
+                                    {{ optional($project->end_date)->format('F d, Y') ?? '-' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="text-sm font-semibold text-white/90">Description</label>
+                            <div class="mt-2 w-full bg-transparent border border-white/15 rounded-lg p-4 text-sm text-white/80">
+                                {{ $project->description }}
+                            </div>
+                        </div>
+
+                        <!-- Status + Progress -->
+                        <div class="flex flex-wrap items-center gap-4">
+                            <div class="px-4 py-2 rounded-lg bg-black/30 border border-white/10">
+                                <span class="text-xs text-white/60">Status:</span>
+                                <span class="ml-2 text-sm font-semibold text-white">
+                                    {{ ucfirst($project->status ?? 'pending') }}
+                                </span>
+                            </div>
+
+                            <div class="px-4 py-2 rounded-lg bg-black/30 border border-white/10">
+                                <span class="text-xs text-white/60">Progress:</span>
+                                <span class="ml-2 text-sm font-semibold text-yellow-300">
+                                    {{ $project->progress ?? 0 }}%
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
         </div>
+
     </div>
 </div>
 @endsection
