@@ -98,8 +98,6 @@
                         </table>
                     </div>
 
-                    <!--hidden inputs for team_members[]-->
-                    <div id="selectedWorkersInputs" class="hidden"></div>
                 </div>
 
 

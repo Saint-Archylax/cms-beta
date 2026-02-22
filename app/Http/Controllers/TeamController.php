@@ -6,7 +6,9 @@ use App\Models\TeamMember;
 use App\Models\Project;
 use App\Models\AttendanceRecord;
 use App\Models\VerificationHistory;
+use App\Models\PayrollRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class TeamController extends Controller
 {
@@ -15,16 +17,32 @@ class TeamController extends Controller
         $teamMembers = TeamMember::all();
         $projects = Project::all();
         $verificationHistory = VerificationHistory::with('teamMember')->latest()->take(7)->get();
+        $verifiedCount = VerificationHistory::where('status', 'Verified')->count();
+        $deniedCount = VerificationHistory::where('status', 'Denied')->count();
         $attendanceRecords = AttendanceRecord::with(['teamMember', 'document'])->where('status', 'pending')->get();
         
-        return view('team.index', compact('teamMembers', 'projects', 'verificationHistory', 'attendanceRecords'));
+        return view('team.index', compact(
+            'teamMembers',
+            'projects',
+            'verificationHistory',
+            'verifiedCount',
+            'deniedCount',
+            'attendanceRecords'
+        ));
     }
 
     public function documents(Request $request)
     {
-        $teamMembers = TeamMember::with(['documents', 'pendingUpdateRequest'])->orderBy('name')->get();
+        $hasUpdateTable = Schema::hasTable('team_member_update_requests');
 
-        return view('team.documents', compact('teamMembers'));
+        $query = TeamMember::query()->with('documents');
+        if ($hasUpdateTable) {
+            $query->with('pendingUpdateRequest');
+        }
+
+        $teamMembers = $query->orderBy('name')->get();
+
+        return view('team.documents', compact('teamMembers', 'hasUpdateTable'));
     }
 
     public function payroll()
@@ -51,8 +69,20 @@ class TeamController extends Controller
 
     public function approveAttendance(Request $request, $id)
     {
-        $attendance = AttendanceRecord::findOrFail($id);
+        $attendance = AttendanceRecord::with(['teamMember', 'document'])->findOrFail($id);
         $attendance->update(['status' => 'verified']);
+
+        $member = $attendance->teamMember;
+        $doc = $attendance->document;
+
+        PayrollRequest::create([
+            'name' => $member?->name ?? 'Unknown',
+            'file_name' => $doc?->name ?? 'Attendance Report',
+            'file_path' => $doc?->path ?? '',
+            'rate' => $member?->salary ?? 'â‚±0',
+            'date' => $attendance->date ?? now()->toDateString(),
+            'status' => 'pending',
+        ]);
         
         VerificationHistory::create([
             'team_member_id' => $attendance->team_member_id,

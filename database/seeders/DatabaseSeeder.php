@@ -11,6 +11,7 @@ use App\Models\AttendanceRecord;
 use App\Models\VerificationHistory;
 use App\Models\PayrollRequest;
 use App\Models\ExpenseRequest;
+use Database\Seeders\TeamPagesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -221,12 +222,17 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($projects as $projectData) {
-            Project::create($projectData);
+            Project::updateOrCreate(
+                ['code' => $projectData['code']],
+                $projectData
+            );
         }
 
         // Attach team members to projects
-        $project1 = Project::find(1);
-        $project1->teamMembers()->attach([1, 2, 3, 4]);
+        $project1 = Project::where('code', 'GF-PRK-2025')->first();
+        if ($project1) {
+            $project1->teamMembers()->syncWithoutDetaching([1, 2, 3, 4]);
+        }
 
         // Create Payroll Requests
         $payrollRequests = [
@@ -277,5 +283,8 @@ class DatabaseSeeder extends Seeder
         }
         $this->call(AttendanceDemoSeeder::class);
         $this->call(UpdateRequestDemoSeeder::class);
+        $this->call(TeamDemoSeeder::class);
+        // Core team connections: documents, attendance, payroll, verification, project assignments
+        $this->call(TeamPagesSeeder::class);
     }
 }

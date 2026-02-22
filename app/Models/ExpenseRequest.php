@@ -10,8 +10,10 @@ class ExpenseRequest extends Model
     use HasFactory;
 
     protected $fillable = [
+        'material_id',
         'materials',
         'quantity',
+        'quantity_value',
         'price_per_unit',
         'total',
         'date',
@@ -20,5 +22,6 @@ class ExpenseRequest extends Model
 
     protected $casts = [
         'date' => 'date',
+        'quantity_value' => 'decimal:2',
     ];
 }

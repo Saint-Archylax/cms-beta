@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\TeamMember;
+use App\Models\InventoryTransaction;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -31,7 +32,35 @@ class ProjectController extends Controller
                 $q->orderBy('name'); // optional
             }])->findOrFail($id);
 
-            return view('projects.show', compact('project'));
+            $projectMaterials = InventoryTransaction::with('material')
+                ->where('project_id', $project->id)
+                ->where('type', 'stock_out')
+                ->get()
+                ->groupBy('material_id')
+                ->map(function ($rows) {
+                    $first = $rows->first();
+                    $qty = $rows->sum(function ($row) {
+                        return (float) $row->quantity;
+                    });
+                    $lastUsed = $rows->sortByDesc('created_at')->first()?->created_at;
+                    $unitPrice = (float) ($first?->material?->unit_price ?? 0);
+                    $rowTotal = $qty * $unitPrice;
+
+                    return (object) [
+                        'material' => $first?->material,
+                        'quantity' => $qty,
+                        'last_used' => $lastUsed,
+                        'unit_price' => $unitPrice,
+                        'total' => $rowTotal,
+                    ];
+                })
+                ->values();
+
+            $projectMaterialsTotal = $projectMaterials->sum(function ($row) {
+                return (float) ($row->total ?? 0);
+            });
+
+            return view('projects.show', compact('project', 'projectMaterials', 'projectMaterialsTotal'));
         }
 
     public function create()

@@ -3,12 +3,6 @@
 @section('content')
 @php
     $employeeCount = $teamMembers->count();
-
-    //Temporary: based on the latest history items shown.
-    //We'll replace with real totals once backend is fully connected.
-    $verifiedCount = $verificationHistory->where('status', 'Verified')->count();
-    $deniedCount = $verificationHistory->where('status', 'Denied')->count();
-
     $monthLabel = now()->format('F Y');
     $yearLabel = now()->format('Y');
 

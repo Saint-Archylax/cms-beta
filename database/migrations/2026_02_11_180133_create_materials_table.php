@@ -9,13 +9,11 @@ return new class extends Migration {
     {
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
-            $table->string('supplier_name');
-            $table->string('supplier')->nullable();
-            $table->string('unit')->default('pcs'); // kg / sack / pcs etc
-            $table->decimal('unit_price', 12, 2)->default(0); // from MMS
-            $table->decimal('stock', 12, 2)->default(0);      // managed by IMS
-            $table->decimal('min_threshold', 12, 2)->default(0);
-            $table->decimal('max_threshold', 12, 2)->nullable();
+            $table->string('material_name');
+            $table->string('unit_of_measure', 50)->default('pcs');
+            $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
+            $table->decimal('unit_price', 12, 2)->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

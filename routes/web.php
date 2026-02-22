@@ -16,36 +16,49 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
 
     // Projects
-    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('/projects/{id}', [ProjectController::class, 'show'])->name('projects.show');
-    Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
-    Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::prefix('projects')->name('projects.')->group(function () {
+        Route::get('/', [ProjectController::class, 'index'])->name('index');
+        Route::get('/create', [ProjectController::class, 'create'])->name('create');
+        Route::post('/', [ProjectController::class, 'store'])->name('store');
+        Route::get('/{id}', [ProjectController::class, 'show'])->name('show');
+        Route::put('/{id}', [ProjectController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('destroy');
+    });
 
     // Team
-    Route::get('/team', [TeamController::class, 'index'])->name('team.index');
-    Route::get('/team/documents', [TeamController::class, 'documents'])->name('team.documents');
-    Route::get('/team/payroll', [TeamController::class, 'payroll'])->name('team.payroll');
-    Route::get('/team/assign', [TeamController::class, 'assign'])->name('team.assign');
-    Route::get('/team/attendance', [TeamController::class, 'attendance'])->name('team.attendance');
-    Route::post('/team/attendance/{id}/approve', [TeamController::class, 'approveAttendance'])->name('team.attendance.approve');
-    Route::post('/team/attendance/{id}/reject', [TeamController::class, 'rejectAttendance'])->name('team.attendance.reject');
-    Route::post('/team/projects/{projectId}/assign', [TeamController::class, 'assignToProject'])->name('team.assign-to-project');
-    Route::post('/team/update-requests/{id}/approve', [TeamController::class, 'approveUpdateRequest'])->name('team.update-requests.approve');
-    Route::post('/team/update-requests/{id}/reject', [TeamController::class, 'rejectUpdateRequest'])->name('team.update-requests.reject');
-    Route::get('/team/members/list', [TeamController::class, 'listMembers'])->name('team.members.list');
+    Route::prefix('team')->name('team.')->group(function () {
+        Route::get('/', [TeamController::class, 'index'])->name('index');
+        Route::get('/documents', [TeamController::class, 'documents'])->name('documents');
+        Route::get('/payroll', [TeamController::class, 'payroll'])->name('payroll');
+        Route::get('/assign', [TeamController::class, 'assign'])->name('assign');
+        Route::get('/attendance', [TeamController::class, 'attendance'])->name('attendance');
+
+        Route::post('/attendance/{id}/approve', [TeamController::class, 'approveAttendance'])->name('attendance.approve');
+        Route::post('/attendance/{id}/reject', [TeamController::class, 'rejectAttendance'])->name('attendance.reject');
+
+        Route::post('/projects/{projectId}/assign', [TeamController::class, 'assignToProject'])->name('assign-to-project');
+
+        Route::post('/update-requests/{id}/approve', [TeamController::class, 'approveUpdateRequest'])->name('update-requests.approve');
+        Route::post('/update-requests/{id}/reject', [TeamController::class, 'rejectUpdateRequest'])->name('update-requests.reject');
+
+        Route::get('/members/list', [TeamController::class, 'listMembers'])->name('members.list');
+    });
 
     // Finance
-    Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
-    Route::post('/finance/payroll/{id}/complete', [FinanceController::class, 'completePayroll'])->name('finance.payroll.complete');
-    Route::post('/finance/expense/{id}/complete', [FinanceController::class, 'completeExpense'])->name('finance.expense.complete');
-    Route::post('/finance/manual-record', [FinanceController::class, 'storeManualRecord'])->name('finance.manual-record.store');
+    Route::prefix('finance')->name('finance.')->group(function () {
+        Route::get('/', [FinanceController::class, 'index'])->name('index');
+        Route::post('/payroll/{id}/complete', [FinanceController::class, 'completePayroll'])->name('payroll.complete');
+        Route::post('/expense/{id}/complete', [FinanceController::class, 'completeExpense'])->name('expense.complete');
+        Route::post('/manual-record', [FinanceController::class, 'storeManualRecord'])->name('manual-record.store');
+        Route::post('/funds/add', [FinanceController::class, 'addFunds'])->name('funds.add');
+    });
 
     // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
 
     // Inventory (IMS)
     Route::prefix('inventory')->name('inventory.')->group(function () {
@@ -53,31 +66,35 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/stock-inout', [InventoryController::class, 'stockInOut'])->name('stock-inout');
         Route::get('/threshold', [InventoryController::class, 'threshold'])->name('threshold');
         Route::get('/history', [InventoryController::class, 'history'])->name('history');
+        Route::get('/low-stock', [InventoryController::class, 'lowStock'])->name('low-stock');
 
         Route::post('/add-stock', [InventoryController::class, 'addStock'])->name('add-stock');
         Route::post('/use-stock', [InventoryController::class, 'useStock'])->name('use-stock');
         Route::post('/update-threshold', [InventoryController::class, 'updateThreshold'])->name('update-threshold');
     });
 
-    // Materials (MMS)
+    // ✅ NEW Materials (MMS) — REPLACEMENT BLOCK
     Route::prefix('materials')->name('materials.')->group(function () {
+
         Route::get('/', [MaterialController::class, 'overview'])->name('overview');
 
         // create flow
         Route::get('/create', [MaterialController::class, 'chooseSupplier'])->name('create');
         Route::get('/supplier/{supplier}', [MaterialController::class, 'supplierProducts'])->name('supplier.products');
+        Route::post('/supplier/{supplier}/products', [MaterialController::class, 'addSupplierProduct'])->name('supplier.products.store');
+        Route::post('/suppliers', [MaterialController::class, 'storeSupplier'])->name('suppliers.store');
 
-        //cart (session)
+        // cart (session)
         Route::post('/cart/add', [MaterialController::class, 'cartAdd'])->name('cart.add');
         Route::post('/cart/remove', [MaterialController::class, 'cartRemove'])->name('cart.remove');
         Route::get('/cart', [MaterialController::class, 'cartView'])->name('cart.view');
         Route::post('/cart/checkout', [MaterialController::class, 'cartCheckout'])->name('cart.checkout');
 
-        //crud actions on existing materials
+        // crud actions
         Route::post('/{material}/update', [MaterialController::class, 'update'])->name('update');
         Route::post('/{material}/delete', [MaterialController::class, 'delete'])->name('delete');
 
-        //history
+        // history
         Route::get('/history', [MaterialController::class, 'history'])->name('history');
     });
 
