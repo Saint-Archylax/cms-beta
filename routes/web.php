@@ -8,12 +8,24 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\AccountController;
 
 Route::get('/', function () {
     return redirect()->route('projects.index');
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::view('/employee/home', 'employee.home')->name('employee.home');
+
+    // Profile
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
 
     // Projects
     Route::prefix('projects')->name('projects.')->group(function () {
@@ -53,11 +65,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/funds/add', [FinanceController::class, 'addFunds'])->name('funds.add');
     });
 
-    // Profile
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
-        Route::patch('/', [ProfileController::class, 'update'])->name('update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    // Account (Create Employee Login)
+    Route::prefix('account')->name('account.')->group(function () {
+        Route::get('/create', [AccountController::class, 'create'])->name('create');
+        Route::post('/create', [AccountController::class, 'store'])->name('store');
     });
 
     // Inventory (IMS)

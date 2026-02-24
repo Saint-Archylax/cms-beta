@@ -28,6 +28,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = $request->user();
+        if ($user && $user->role === 'employee') {
+            return redirect()->route('employee.home');
+        }
+
         return redirect()->intended(route('projects.index', absolute: false));
     }
 
