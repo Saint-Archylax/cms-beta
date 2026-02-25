@@ -210,7 +210,7 @@
                         A rejection remark is required. Enter the reason below.
                     </div>
 
-                    <form id="rejectForm" method="POST" action="">
+                    <form id="rejectForm" method="POST" action="" enctype="multipart/form-data">
                         @csrf
                         <textarea
                             name="remarks"
@@ -218,6 +218,17 @@
                             placeholder="Type here:"
                             required
                         ></textarea>
+
+                        <div class="mt-3">
+                            <label class="block text-xs text-gray-600 mb-1">Attach file for employee (optional)</label>
+                            <input
+                                id="adminResponseFile"
+                                type="file"
+                                name="admin_response_file"
+                                accept=".jpg,.jpeg,.png,.gif,.mp4,.pdf,.psd,.ai,.doc,.docx,.ppt,.pptx"
+                                class="w-full border rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-yellow-200"
+                            >
+                        </div>
 
                         <div class="mt-4">
                             <button
@@ -314,6 +325,7 @@
         const modal = document.getElementById('rejectModal');
         const form = document.getElementById('rejectForm');
         form.action = "{{ url('/team/attendance') }}/" + id + "/reject";
+        form.reset();
         modal.classList.remove('hidden');
     }
     function closeRejectModal() {

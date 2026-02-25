@@ -14,7 +14,13 @@
     </div>
 
     <div class="rounded-2xl border border-gray-400 bg-[#E6E6E6] p-6">
-        <form method="POST" action="{{ route('account.store') }}" class="grid grid-cols-12 gap-6">
+        @if($errors->any())
+            <div class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('admin.account.store') }}" enctype="multipart/form-data" class="grid grid-cols-12 gap-6">
             @csrf
 
             <div class="col-span-12">
@@ -55,6 +61,12 @@
                 <label class="text-xs text-gray-700">Phone</label>
                 <input name="phone" value="{{ old('phone') }}" required
                        class="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none">
+            </div>
+
+            <div class="col-span-12 md:col-span-6">
+                <label class="text-xs text-gray-700">Profile Picture (Optional)</label>
+                <input type="file" name="avatar" accept=".jpg,.jpeg,.png,.webp"
+                       class="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none file:mr-3 file:rounded file:border-0 file:bg-[#f6c915] file:px-3 file:py-1 file:text-xs file:font-semibold">
             </div>
 
             <div class="col-span-12 md:col-span-6">

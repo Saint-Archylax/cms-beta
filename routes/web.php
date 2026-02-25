@@ -9,19 +9,45 @@ use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Employee\ProjectController as EmployeeProjectController;
+use App\Http\Controllers\Employee\InventoryController as EmployeeInventoryController;
+use App\Http\Controllers\Employee\ProfileController as EmployeeProfileController;
+use App\Http\Controllers\Employee\TeamController as EmployeeTeamController;
 
 Route::get('/', function () {
     return redirect()->route('projects.index');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::view('/employee/home', 'employee.home')->name('employee.home');
-
     // Profile
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('/', [ProfileController::class, 'update'])->name('update');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
+});
+
+Route::middleware(['auth', 'employee'])->prefix('employee')->name('employee.')->group(function () {
+    Route::get('/home', function () {
+        return redirect()->route('employee.projects.employeedashboard');
+    })->name('home');
+
+    Route::prefix('team')->name('team.')->group(function () {
+        Route::get('/', [EmployeeTeamController::class, 'index'])->name('index');
+        Route::post('/projects/{projectId}/submit-report', [EmployeeTeamController::class, 'submitReport'])->name('submit-report');
+    });
+
+    Route::prefix('projects')->name('projects.')->group(function () {
+        Route::get('/', [EmployeeProjectController::class, 'dashboard'])->name('employeedashboard');
+        Route::get('/{id}', [EmployeeProjectController::class, 'show'])->name('show');
+    });
+
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', [EmployeeInventoryController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [EmployeeProfileController::class, 'show'])->name('show');
     });
 });
 
@@ -66,7 +92,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 
     // Account (Create Employee Login)
-    Route::prefix('account')->name('account.')->group(function () {
+    Route::prefix('admin/account')->name('admin.account.')->group(function () {
         Route::get('/create', [AccountController::class, 'create'])->name('create');
         Route::post('/create', [AccountController::class, 'store'])->name('store');
     });

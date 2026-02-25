@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureAdmin
+class EnsureEmployee
 {
     /**
      * Handle an incoming request.
@@ -19,8 +19,8 @@ class EnsureAdmin
             return redirect()->route('login');
         }
 
-        if ($user->role !== null && $user->role !== 'admin') {
-            return redirect()->route('employee.projects.employeedashboard');
+        if ($user->role !== 'employee') {
+            return redirect()->route('projects.index');
         }
 
         return $next($request);

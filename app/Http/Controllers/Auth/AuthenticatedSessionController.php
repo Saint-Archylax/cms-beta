@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = $request->user();
         if ($user && $user->role === 'employee') {
-            return redirect()->route('employee.home');
+            return redirect()->route('employee.projects.employeedashboard');
         }
 
         return redirect()->intended(route('projects.index', absolute: false));
